@@ -130,7 +130,7 @@ class RenderedBundle(object):
         # It may be a good idea to mimic juju-deployer to allow more flexible
         # overrides. Otherwise, we are stuck managing a static constants that
         # can become out of date.
-        if self.get_target():
+        if not bundle_dict.get('services') and self.get_target():
             bundle_dict = render_target_inheritance(bundle_dict,
                                                     self.get_target())
 
@@ -142,7 +142,6 @@ class RenderedBundle(object):
             charm_obj = Charm(
                     charm, self.series, self.release, self.source,
                     charm_dict={charm: bundle_dict['services'][charm]})
-            charm_obj.get_subordinate()
             self.charms[charm_obj.application_name] = charm_obj
 
         # Create relations list and fill up self.relations
@@ -167,7 +166,6 @@ class RenderedBundle(object):
                                           charm_dict={
                                               charm:
                                               bundle_dict['services'][charm]})
-                        charm_obj.get_subordinate()
                         self.charms[charm_obj.application_name] = charm_obj
 
             if 'relations' in bundle_dict.keys():
